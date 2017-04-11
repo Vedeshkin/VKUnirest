@@ -4,6 +4,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 import java.util.TimerTask;
 
@@ -14,6 +16,11 @@ public class Workflow  extends TimerTask{
 
  public void initialize()
  {
+     HttpClient httpClient = HttpClients.custom()
+             .disableCookieManagement()
+             .build();
+     Unirest.setHttpClient(httpClient);
+
      HttpResponse<JsonNode> response = null;
      try {
          response = Unirest.get("https://api.vk.com/method/friends.get")
@@ -30,7 +37,7 @@ public class Workflow  extends TimerTask{
      System.out.println("Initialized");
  }
 
-    private int runCount = 1;
+    private int runCount = 0;
     @Override
     public void run() {
         HttpResponse<JsonNode> response = null;
