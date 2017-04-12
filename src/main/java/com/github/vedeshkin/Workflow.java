@@ -33,6 +33,9 @@ public class Workflow  extends TimerTask{
      if (response != null) {
          JsonHandler jh = new JsonHandler(response.getBody().getObject());
          jh.storeAllStatuses();
+         UserDAO userDAO = new UserDaoImpl();
+         userDAO.deleteAllUsers();
+         userDAO.storeUsers(jh.getNames());
      }
      System.out.println("Initialized");
  }

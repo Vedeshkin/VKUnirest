@@ -4,6 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by vvedeshkin on 4/11/2017.
  */
@@ -28,22 +31,24 @@ public   class JsonHandler {
             exp.printStackTrace();
         }
     }
-    public void getNames(){
+    public List<UserBean> getNames(){
 
         if (responses == null)
         {
             //add more logic here
             System.out.println("Responses is null");
-            return;
+            return null;
         }
+        ArrayList<UserBean> users = new ArrayList<>();
         for (int i = 0 ;i < responses.length(); i++)
         {
             String first_name = responses.getJSONObject(i).getString("first_name");
             String last_name = responses.getJSONObject(i).getString("last_name");
             int UID = responses.getJSONObject(i).getInt("uid");
             System.out.printf("UID: %10d| %s %s \n",UID,first_name,last_name);
+            users.add(new UserBean(UID,first_name+" "+last_name));
         }
-
+        return users;
     }
 
     public void getStatuses()
@@ -95,9 +100,10 @@ public   class JsonHandler {
             Status previous = sh.getStatusEntity(current.getUID());
             if(!current.equals(previous))
             {
-                System.out.printf("Entity has changed status:\nWas: %s\nNow: %s\n",previous,current);
+                System.out.printf("Entity  has changed status:\nWas: %s\nNow: %s\n",previous,current);
                 //here we should store to database our changes e.g. UID STATUS Begin end(Instant.now())
                 sh.putStatusEntity(current.getUID(),current);
+                StatusDAOImpl.getInstance().storeStatus(previous);
                 countUpdate++;
             }
         }

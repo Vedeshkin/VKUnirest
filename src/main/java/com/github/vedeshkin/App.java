@@ -10,8 +10,9 @@ import java.util.Timer;
 public class App {
     public static void main(String[] args) throws Exception {
 
-        DOA doa = new DOA();
-        doa.showStatus();
+        DBmanager dbm = DBmanager.getInstance();
+        dbm.showStatus();
+
         Workflow main   = new Workflow();
         main.initialize();
         Timer timer = new Timer();
