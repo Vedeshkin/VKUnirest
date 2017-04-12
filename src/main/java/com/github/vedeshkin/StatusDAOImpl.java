@@ -1,5 +1,6 @@
 package com.github.vedeshkin;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -26,15 +27,16 @@ public class StatusDAOImpl implements StatusDAO {
         String query = "INSERT INTO STATUS (UID,STATUS,BEGIN,END) VALUES (?,?,?,?)";
         PreparedStatement statement = null;
         try{
-            statement = DBmanager.getInstance().getConnection().prepareStatement(query);
+          Connection conn = DBmanager.getInstance().getConnection();
 
-
+                statement =  conn.prepareStatement(query);
                 statement.setInt(1,status.getUID());
                 statement.setString(2,status.toString());
                 statement.setTimestamp(3,Timestamp.from(status.getTimestamp()));
                 statement.setTimestamp(4,Timestamp.from(Instant.now()));
                 statement.execute();
             statement.close();
+            conn.close();
             System.out.printf("Entity has  saved in DB\n");
         } catch (SQLException se )
         {
