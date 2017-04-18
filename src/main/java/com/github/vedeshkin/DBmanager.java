@@ -55,4 +55,11 @@ public class DBmanager {
         return connectionPool.getConnection();
 
     }
+
+    public void shutdown() {
+        if (h2tcpServer != null)
+            h2tcpServer.shutdown();
+        if(h2WebServer != null)
+        h2WebServer.shutdown();
+    }
 }
