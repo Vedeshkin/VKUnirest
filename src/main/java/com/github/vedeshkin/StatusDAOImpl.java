@@ -5,12 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by vvedeshkin on 4/12/2017.
  */
 public class StatusDAOImpl implements StatusDAO {
 
+    private static Logger logger = Logger.getLogger(StatusDAOImpl.class.getName());
     private  static  StatusDAOImpl instance = null;
     private StatusDAOImpl() {
     }
@@ -37,10 +40,10 @@ public class StatusDAOImpl implements StatusDAO {
                 statement.execute();
             statement.close();
             conn.close();
-            System.out.printf("Entity has  saved in DB\n");
+            logger.info("Entity has  saved in DB");
         } catch (SQLException se )
         {
-            se.printStackTrace();
+            logger.log(Level.WARNING,"An error occured during the query execution.",se);
         }
     }
 }

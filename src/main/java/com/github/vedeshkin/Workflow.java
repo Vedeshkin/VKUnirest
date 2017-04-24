@@ -6,14 +6,16 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
-
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
 /**
  * Created by vvedeshkin on 4/11/2017.
  */
 public class Workflow  extends TimerTask{
 
+    private static PropertiesHolder ph = PropertiesHolder.getInstance();
+    private static final Logger LOGGER = Logger.getLogger(Workflow.class.getName());
  public void initialize()
  {
      HttpClient httpClient = HttpClients.custom()
@@ -37,7 +39,7 @@ public class Workflow  extends TimerTask{
          userDAO.deleteAllUsers();
          userDAO.storeUsers(jh.getNames());
      }
-     System.out.println("Initialized");
+     LOGGER.info("Initialized");
  }
 
     private int runCount = 0;
@@ -57,6 +59,6 @@ public class Workflow  extends TimerTask{
             jh.compareAndUpdate();
             runCount++;
         }
-        System.out.printf("Workflow %d has been processed \n",runCount);
+        LOGGER.info(String.format("Workflow  has been processed \n",runCount));
     }
 }

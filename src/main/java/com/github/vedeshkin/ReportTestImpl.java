@@ -1,14 +1,12 @@
 package com.github.vedeshkin;
 
-import net.sf.dynamicreports.report.builder.QueryBuilder;
-import net.sf.dynamicreports.report.builder.ReportTemplateBuilder;
 import net.sf.dynamicreports.report.exception.DRException;
-
-import javax.xml.transform.Templates;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
 
@@ -17,6 +15,7 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.*;
  */
 public class ReportTestImpl {
 
+    private static final Logger logger = Logger.getLogger(ReportTestImpl.class.getName());
     private String userName;
     int  uid;
     private Connection connection;
@@ -41,8 +40,7 @@ public class ReportTestImpl {
             }
 
         }catch (SQLException se){
-            se.printStackTrace();
-            System.out.println("An error occurred  during initialization");
+            logger.log(Level.SEVERE,"An error ocured during initialization",se);
             DBmanager.getInstance().shutdown();
         }
         if(uid != 0 )
@@ -63,7 +61,7 @@ public class ReportTestImpl {
                     .setDataSource(select + uid,connection)
                     .show();
         }catch (DRException e) {
-            e.printStackTrace();
+           logger.log(Level.SEVERE,"Build of report has been failed",e);
         }
 
     }
@@ -71,7 +69,7 @@ public class ReportTestImpl {
 
     public static void main(String[] args) {
 
-        ReportTestImpl report = new ReportTestImpl("");
+        ReportTestImpl report = new ReportTestImpl("Ар Ти");
         report.initialize();
         report.build();
 

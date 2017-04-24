@@ -6,6 +6,7 @@ import org.h2.tools.Server;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 /**
  * Created by vvedeshkin on 4/11/2017.
@@ -17,16 +18,17 @@ public class DBmanager {
     private JdbcDataSource dataSource;
     JdbcConnectionPool connectionPool;
     private static DBmanager instance = null;
-
+    private static PropertiesHolder ph = PropertiesHolder.getInstance();
+    private static final Logger LOGGER = Logger.getLogger(DBmanager.class.getName());
 
     private DBmanager() throws SQLException {
-        h2tcpServer = Server.createTcpServer("-tcpPort","9000","-tcpAllowOthers").start();
-        h2WebServer = Server.createWebServer("-webPort","9001","-webAllowOthers").start();
+        h2tcpServer = Server.createTcpServer("-tcpPort",ph.getProperty("dbTcpPort"),"-tcpAllowOthers").start();
+        h2WebServer = Server.createWebServer("-webPort",ph.getProperty("dbWebPort"),"-webAllowOthers").start();
         dataSource = new JdbcDataSource();
-        dataSource.setURL("jdbc:h2:tcp:localhost:9000/~/VK;INIT=RUNSCRIPT FROM 'C:/sql/create.sql'");
+        dataSource.setURL(ph.getProperty("jdbcConnectionString"));
         dataSource.setLoginTimeout(0);
-        dataSource.setUser("sa");//should be in properties?
-        dataSource.setPassword("sa");
+        dataSource.setUser(ph.getProperty("dbUser"));
+        dataSource.setPassword(ph.getProperty("dbPass"));
         connectionPool = JdbcConnectionPool.create(dataSource);
         connectionPool.setLoginTimeout(0);
     }
@@ -46,10 +48,10 @@ public class DBmanager {
 
     public void showStatus()
     {
-        System.out.println(h2tcpServer.getStatus());
-        System.out.println(h2tcpServer.getURL());
-        System.out.println(h2WebServer.getStatus());
-        System.out.println(h2WebServer.getURL());
+        LOGGER.info(h2tcpServer.getStatus());
+        LOGGER.info(h2tcpServer.getURL());
+        LOGGER.info(h2WebServer.getStatus());
+        LOGGER.info(h2WebServer.getURL());
     }
     public Connection getConnection() throws SQLException {
         return connectionPool.getConnection();
